@@ -1,3 +1,4 @@
+# this code is from toward data sciene artical: https://towardsdatascience.com/complete-step-by-step-gradient-descent-algorithm-from-scratch-acba013e8420
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
@@ -16,13 +17,45 @@ def plotFunc(x0):
     plt.xlabel('$x$')
     plt.ylabel('$f(x)$')
     plt.title('Objective Function')
-    plt.show()
+   
+    
 
 def plotPath(xs, ys, x0):
     plotFunc(x0)
     plt.plot(xs, ys, linestyle='--', marker='o', color='orange')
     plt.plot(xs[-1], ys[-1], 'ro')
+    plt.show()
 
+def GradientDescentSimple(func, fprime, x0, alpha, tol=1e-5, max_iter=1000):
+    # initialize x, f(x), and -f'(x)
+    xk = x0
+    fk = func(xk)
+    pk = -fprime(xk)
+    # initialize number of steps, save x and f(x)
+    num_iter = 0
+    curve_x = [xk]
+    curve_y = [fk]
+    # take steps
+    while abs(pk) > tol and num_iter < max_iter:
+        # calculate new x, f(x), and -f'(x)
+        xk = xk + alpha * pk
+        fk = func(xk)
+        pk = -fprime(xk)
+        # increase number of steps by 1, save new x and f(x)
+        num_iter += 1
+        curve_x.append(xk)
+        curve_y.append(fk)
+    # print results
+    if num_iter == max_iter:
+        print('Gradient descent does not converge.')
+    else:
+        print('Solution found:\n  y = {:.4f}\n  x = {:.4f}'.format(fk, xk))
+    
+    return curve_x, curve_y
 
-x0 = -4
+x0 = 4
 plotFunc(x0)
+
+
+xs, ys = GradientDescentSimple(func, fprime, x0, alpha=0.9)
+plotPath(xs, ys, x0)
